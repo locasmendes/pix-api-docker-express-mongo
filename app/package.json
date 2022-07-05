@@ -13,7 +13,7 @@
     "api",
     "mongodb"
   ],
-  "author": "bezkoder",
+  "author": "locasmendes",
   "license": "ISC",
   "dependencies": {
     "cors": "^2.8.5",
