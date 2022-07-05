@@ -4,20 +4,21 @@ const Account = db.account;
 
 exports.create = (req, res) => {
 
-  if (!req.body.key) {
-    res.status(400).json({ message: "Insira a chave!" });
-    return;
+  if (empty(req.body.key)) {
+    return res.status(400).json({ message: "Insira a chave!" });
   }
+
   let key = req.body.key
-  if (!validateKey(key)) {
+  let isValid = validateKey(key)
+  if (isValid.key === false) {
     return res.status(400).json({message: "Insira uma chave válida (email ou CPF) e/ou verifique se foi digitada corretamente   "})
   }
 
   const account= new Account({
-    key: req.body.key
+    key: isValid.key
   });
 
-  account    .save(account)
+  account.save(account)
     .then(data => {
       res.send(data);
     })
@@ -45,7 +46,15 @@ exports.list = (req, res) => {
 };
 
 exports.addTransaction = (req, res) => {
-  const key = req.body.key;
+
+  if (empty(req.body.key)){
+    return res.status(400).json({ message: "Insira a chave!" });
+  }
+  let isValid = validateKey(req.body.key)
+  if (isValid.key === false) {
+    return res.status(400).json({message: "Insira uma chave válida (email ou CPF) e/ou verifique se foi digitada corretamente   "})
+  }
+  const key = isValid.key;
   const transaction = req.body.transaction
   transaction.createdAt = new Date().toISOString()
   const value = transaction.value
@@ -80,7 +89,6 @@ exports.findOne = (req, res) => {
         res.status(404).send({ message: "Conta com a chave " + key + " não é cadastrada na instituição Will Bank."});
       }
       else {
-        data.balance = Intl.NumberFormat('pt-br', {style: 'currency', currency: 'BRL'}).format(data.balance)
         res.send(data);
       }
     })
@@ -90,6 +98,34 @@ exports.findOne = (req, res) => {
         .send({ message: "Erro ao buscar conta com a chave " + key });
     });
 };
+
+exports.updateKey = (req, res) => {
+  if (empty(req.params.key) || empty(req.body.newKey)) {
+    res.status(400).json({ message: "Insira a chave!" });
+    return;
+  }
+  const key = req.params.key
+  let isValid = validateKey(req.body.newKey)
+  if (isValid.key === false) {
+    return res.status(400).json({message: "Insira uma chave válida (email ou CPF) e/ou verifique se foi digitada corretamente"})
+  }
+  const newKey = isValid.key
+
+      Account.findOneAndUpdate({key: key}, {key: newKey})
+      .then(data => {
+        if (!empty(data)) {
+          res.json({message: `Chave pix atualizada de ${key} para ${newKey}`});
+        } else {
+          res.status(404).json({message: 'Chave não cadastrada na instituição Will Bank.'})
+        }
+      })
+      .catch(err => {
+        res.status(500).send({
+          message:
+              err.message || "Ocorreu algum erro. Tente verifique a chave e tente novamente mais tarde."
+        });
+      });
+}
 
 exports.delete = (req, res) => {
   const key = req.params.key;

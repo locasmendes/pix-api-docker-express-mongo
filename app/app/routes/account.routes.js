@@ -7,6 +7,7 @@ module.exports = app => {
   router.post("/", accounts.create);
   router.get("/", accounts.list);
   router.get("/:key", accounts.findOne);
+  router.patch("/:key", accounts.updateKey);
   router.delete("/:key", accounts.delete);
   router.delete("/", accounts.deleteAll);
   router.post("/transaction", accounts.addTransaction);
