@@ -1,13 +1,12 @@
 exports.validateKey = (strKey) => {
-    const cpfRegex = /[0-9]{3}\.?[0-9]{3}\.?[0-9]{3}\-?[0-9]{2}/gi;
     const emailRegex = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/gi;
-
-    if(cpfRegex.test(strKey.replace(/[^\d]+/g,''))) {
-        return validateCpf(strKey)
+    const formattedCpf = formatCpf(strKey)
+    if(validateCpf(formattedCpf)) {
+        return {key: formattedCpf}
     } else if(emailRegex.test(strKey)) {
-        return true
+        return {key: strKey}
     }
-    return false
+    return {key: false}
 
 }
 
@@ -39,7 +38,10 @@ function validateCpf(strKey) {
     let sum;
     let resto;
     sum = 0;
-    if (strKey === "00000000000") return false;
+
+    if (strKey.length < 11 || strKey.length > 11) return false
+
+    if (strKey === '00000000000') return false;
 
     for (let i=1; i<=9; i++) sum = sum + parseInt(strKey.substring(i-1, i)) * (11 - i);
     resto = (sum * 10) % 11;
@@ -53,4 +55,8 @@ function validateCpf(strKey) {
 
     if ((resto === 10) || (resto === 11))  resto = 0;
     return resto === parseInt(strKey.substring(10, 11));
+}
+
+function formatCpf(rawCpf) {
+    return rawCpf.replace(/[^\d]+/g,'')
 }
