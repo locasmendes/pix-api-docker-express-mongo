@@ -1,0 +1,25 @@
+{
+  "name": "desafio-node-express-mongodb",
+  "version": "1.0.0",
+  "description": "Node.js Restful CRUD API com Node.js, Express e MongoDB para PIX",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "nodejs",
+    "express",
+    "rest",
+    "api",
+    "mongodb"
+  ],
+  "author": "bezkoder",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1",
+    "mongoose": "^5.8.10",
+    "nodemon": "^2.0.18"
+  }
+}
