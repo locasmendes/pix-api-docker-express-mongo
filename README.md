@@ -29,3 +29,7 @@ docker-compose down --rmi all
 ## Variáveis de ambiente
 
 É possível configurar as variáveis de ambiente em um arquivo .env, o mesmo será utilizado pelo docker-compose e pela aplicação
+
+## Rotas
+
+Todas as rotas e variáveis disponíveis se encontram na raiz do projeto, em arquivos de collection do postman.
